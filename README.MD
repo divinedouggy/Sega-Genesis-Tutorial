@@ -1,3 +1,3 @@
-# My Awesome Game
+# Sega Genesis Tutorial Game
 
-This is My Awesome 16 Bit Cartridge game for mega Drive
+Just coding along with Piggsy's tutorial on creating my own Sega Genesis game
