@@ -11,6 +11,9 @@ int hscroll_offset_fore = 0;
 #define ANIM_WALK 2
 #define ANIM_UPPER 3
 
+int attack_timer = 0;
+int attack_duration = 56;
+
 Sprite* player;
 int player_x = 100;
 int player_y = 85;
@@ -44,6 +47,19 @@ static void handleInput(){
     SPR_setPosition(player, player_x, player_y);
 }
 
+static void joyEvent(u16 joy, u16 changed, u16 state) {
+    if ( (changed & state & BUTTON_B) && attack_timer == 0 ) {
+        SPR_setAnim(player, ANIM_UPPER);
+        attack_timer +=1;
+    }   
+}
+
+static void attack_function() {
+        if (attack_timer == 0) handleInput();
+        else if (attack_timer > 0 && attack_timer < attack_duration) attack_timer+=1;
+        else if (attack_timer == attack_duration) attack_timer = 0;
+}
+
 int main()
 {
     SPR_init();
@@ -60,6 +76,8 @@ int main()
     ind += fg1.tileset->numTile;
 
     VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
+
+    JOY_setEventHandler(joyEvent);
     
     while(1)
     {
@@ -69,9 +87,8 @@ int main()
         VDP_setHorizontalScroll(BG_A, hscroll_offset_fore);
         // hscroll_offset_fore -= 2;
 
-        handleInput();
+        attack_function();
         SPR_update();
-        
         SYS_doVBlankProcess();
     }
     return (0);
